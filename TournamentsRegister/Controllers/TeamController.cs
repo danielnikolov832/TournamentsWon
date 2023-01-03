@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TournamentsRegister.Models.Requests;
+using TournamentsRegister.Models.MiddleModelsForDAL;
 using TournamentsRegister.Models;
 using TournamentsRegister.Services;
 using Mapster;
-using TournamentsRegister.Models.MiddleModelsForDAL;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 

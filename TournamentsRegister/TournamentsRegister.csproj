@@ -22,7 +22,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\EFCoreRepositoriesLib\EFCoreRepositoriesLib.csproj" />
+    <None Include="..\.editorconfig" Link=".editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\EFCoreRepositoriesLib\EFCoreRepositoriesLib.FluentValidation\EFCoreRepositoriesLib.FluentValidation.csproj" />
+    <ProjectReference Include="..\..\EFCoreRepositoriesLib\EFCoreRepositoriesLib\EFCoreRepositoriesLib.csproj" />
   </ItemGroup>
 
 </Project>

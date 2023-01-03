@@ -1,4 +1,5 @@
 ﻿using EFCoreRepositoriesLib;
+using EFCoreRepositoriesLib.FluentValidation;
 using FluentQuery.Core;
 using FluentValidation;
 using FluentValidation.Results;
@@ -10,17 +11,15 @@ public class ServiceBase<TPrimaryKeyUserModel, TPrimaryKeyUserDAO, TInsert, TUpd
     where TPrimaryKeyUserDAO : PublicPrimaryKeyUser
     where TRepository : ICrudRepositoryWithPKAndMapperBase<TPrimaryKeyUserModel, TPrimaryKeyUserDAO, TInsert, TUpdate>
 {
-    public ServiceBase(TRepository repository, IValidator<TPrimaryKeyUserModel>? defaultModelValidator = null,
+    public ServiceBase(TRepository repository,
         IValidator<TInsert>? defaultInsertValidator = null, IValidator<TUpdate>? defaultUpdateValidator = null)
     {
         _repository = repository;
-        _defaultModelValidator = defaultModelValidator;
         _defaultInsertValidator = defaultInsertValidator;
         _defaultUpdateValidator = defaultUpdateValidator;
     }
 
     private readonly TRepository _repository;
-    private readonly IValidator<TPrimaryKeyUserModel>? _defaultModelValidator;
     private readonly IValidator<TInsert>? _defaultInsertValidator;
     private readonly IValidator<TUpdate>? _defaultUpdateValidator;
 
@@ -39,7 +38,7 @@ public class ServiceBase<TPrimaryKeyUserModel, TPrimaryKeyUserDAO, TInsert, TUpd
         return _repository.GetById(id);
     }
 
-    private bool Validate<T>(Action<ValidationResult, IValidator<T>, T> handleFailAction,
+    private static bool Validate<T>(Action<ValidationResult, IValidator<T>, T> handleFailAction,
         T objectToValidate, IValidator<T>? defaultValidator = null, IValidator<T>? currentValidator = null)
     {
         IValidator<T>? validator = currentValidator ?? defaultValidator;
@@ -56,13 +55,8 @@ public class ServiceBase<TPrimaryKeyUserModel, TPrimaryKeyUserDAO, TInsert, TUpd
         return result.IsValid;
     }
 
-    private bool ValidateModel(TPrimaryKeyUserModel objectToValidate, IValidator<TPrimaryKeyUserModel>? currentValidator = null) => Validate(HandleValidationOnModelFail, objectToValidate, _defaultModelValidator, currentValidator);
     private bool ValidateInsert(TInsert objectToValidate, IValidator<TInsert>? currentValidator = null) => Validate(HandleValidationOnInsertFail, objectToValidate, _defaultInsertValidator, currentValidator);
     private bool ValidateUpdate(TUpdate objectToValidate, IValidator<TUpdate>? currentValidator = null) => Validate(HandleValidationOnUpdateFail, objectToValidate, _defaultUpdateValidator, currentValidator);
-
-    protected virtual void HandleValidationOnModelFail(ValidationResult result, IValidator<TPrimaryKeyUserModel> validator, TPrimaryKeyUserModel validatedObject)
-    {
-    }
 
     protected virtual void HandleValidationOnInsertFail(ValidationResult result, IValidator<TInsert> validator, TInsert validatedObject)
     {
@@ -140,6 +134,59 @@ public class ServiceBase<TPrimaryKeyUserModel, TInsert, TUpdate, TRepository>
         updateValidator?.ValidateAndThrow(update);
 
         _repository.Update(update);
+    }
+
+    public void Remove(TPrimaryKeyUserModel tournament)
+    {
+        _repository.Remove(tournament);
+    }
+
+    public virtual void Remove(int id)
+    {
+        _repository.Remove(id);
+    }
+}
+
+public class ServiceBase<TPrimaryKeyUserModel, TPrimaryKeyUserDAO, TRepository>
+    where TPrimaryKeyUserModel : PrivatePrimaryKeyUser
+    where TPrimaryKeyUserDAO : PublicPrimaryKeyUser
+    where TRepository : ICrudRepositoryWithPKAndMapperAndValidationBase<TPrimaryKeyUserModel, TPrimaryKeyUserDAO>
+{
+    public ServiceBase(TRepository repository,
+        IValidator<TPrimaryKeyUserModel>? defaultModelValidator = null, IValidator<TPrimaryKeyUserDAO>? defaultDaoValidator = null)
+    {
+        _repository = repository;
+        _defaultInsertValidator = defaultModelValidator;
+        _defaultUpdateValidator = defaultDaoValidator;
+    }
+
+    private readonly TRepository _repository;
+    private readonly IValidator<TPrimaryKeyUserModel>? _defaultInsertValidator;
+    private readonly IValidator<TPrimaryKeyUserDAO>? _defaultUpdateValidator;
+
+    public virtual List<TPrimaryKeyUserModel> GetAll(IQuery<TPrimaryKeyUserModel>? query = null)
+    {
+        return (query is null) ? _repository.GetAll() : _repository.GetAll(query);
+    }
+
+    public virtual List<TPrimaryKeyUserModel> GetAll(IQuery<TPrimaryKeyUserDAO> query)
+    {
+        return (query is null) ? _repository.GetAll() : _repository.GetAll(query);
+    }
+
+    public virtual TPrimaryKeyUserModel? GetById(int id)
+    {
+        return _repository.GetById(id);
+    }
+
+    public virtual void Insert(TPrimaryKeyUserModel model, IValidator<TPrimaryKeyUserModel>? currentModelValidator = null, IValidator<TPrimaryKeyUserDAO>? currentDaoValidator = null)
+    {
+        _repository.Insert(model, currentModelValidator, currentDaoValidator);
+    }
+
+    public virtual void Update(TPrimaryKeyUserModel model, IValidator<TPrimaryKeyUserModel>? currentModelValidator = null, IValidator<TPrimaryKeyUserDAO>? currentDaoValidator = null)
+    {
+        _repository.Update(model, currentModelValidator, currentDaoValidator);
     }
 
     public void Remove(TPrimaryKeyUserModel tournament)

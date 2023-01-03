@@ -44,14 +44,14 @@ public class TournamentController : ControllerBase
     [HttpPost]
     public void Post([FromBody] TournamentInsert insert, [FromServices] IValidator<TournamentInsert>? validator = null)
     {
-        _tournamentService.Insert(insert);
+        _tournamentService.Insert(insert, validator);
     }
 
     // PUT api/<TournamentController>
     [HttpPut]
-    public void Put([FromBody] TournamentUpdate update)
+    public void Put([FromBody] TournamentUpdate update, [FromServices] IValidator<TournamentUpdate>? validator = null)
     {
-        _tournamentService.Update(update);
+        _tournamentService.Update(update, validator);
     }
 
     // DELETE api/<TournamentController>/5
