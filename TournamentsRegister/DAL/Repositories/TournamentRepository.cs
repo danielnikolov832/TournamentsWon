@@ -1,4 +1,5 @@
-﻿using EFCoreRepositoriesLib;
+﻿using EFCoreRepositoriesLib.FluentValidation;
+using FluentValidation;
 using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
 using TournamentsRegister.DAL.DAOs;
@@ -7,32 +8,44 @@ using TournamentsRegister.Models.Requests;
 
 namespace TournamentsRegister.DAL.Repositories;
 
-public interface ITournamentRepository : ICrudRepositoryWithPKAndMapperBase<Tournament, TournamentDAO, TournamentInsert, TournamentUpdate>
+public interface ITournamentRepository : ICrudRepositoryWithPKAndMapperAndValidationBase<Tournament, TournamentDAO, TournamentInsert, TournamentUpdate>
 {
 }
 
-public class TournamentRepository : CrudRepositoryWithPKAndMapperBase<Tournament, TournamentDAO, TournamentInsert, TournamentUpdate>, ITournamentRepository
+public class TournamentRepository : CrudRepositoryWithPKAndMapperAndValidationBase<Tournament, TournamentDAO, TournamentInsert, TournamentUpdate>, ITournamentRepository
 {
     public TournamentRepository(TournamentContext dbContext, IMapper mapper) : base(dbContext, mapper)
     {
     }
 
-    public override Tournament Insert(TournamentInsert model)
+    protected override Tournament? InsertInternal(TournamentInsert insert, IValidator<Tournament>? modelValidator = null, IValidator<TournamentDAO>? daoValidator = null)
     {
-        Tournament tournament = _mapper.Map<Tournament>(model);
+        Tournament tournament = _mapper.Map<Tournament>(insert);
 
-        _table.Add(Adapt(tournament));
+        if(!ValidateModel(tournament, modelValidator)) return null;
+
+        TournamentDAO entity = Adapt(tournament);
+
+        if (!ValidateDAO(entity, daoValidator)) return null;
+
+        _table.Add(entity);
 
         _dbContext.SaveChanges();
 
         return tournament;
     }
 
-    public override void Update(TournamentUpdate model)
+    protected override void UpdateInternal(TournamentUpdate update, IValidator<Tournament>? modelValidator = null, IValidator<TournamentDAO>? daoValidator = null)
     {
-        Tournament tournament = _mapper.Map<Tournament>(model);
+        Tournament tournament = _mapper.Map<Tournament>(update);
 
-        _table.Update(Adapt(tournament));
+        if (!ValidateModel(tournament, modelValidator)) return;
+
+        TournamentDAO entity = Adapt(tournament);
+
+        if (!ValidateDAO(entity, daoValidator)) return;
+
+        _table.Update(entity);
 
         _dbContext.SaveChanges();
     }

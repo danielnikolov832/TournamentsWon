@@ -4,6 +4,7 @@ using TournamentsRegister.Models.MiddleModelsForDAL;
 using TournamentsRegister.Models;
 using TournamentsRegister.Services;
 using Mapster;
+using FluentValidation;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -48,22 +49,22 @@ public class TeamController : ControllerBase
         return Ok(output);
     }
 
-    // POST api/<TeamController>
+    // POST api/<TeamController>/5
     [HttpPost("{tournamentID}")]
-    public void Post([FromRoute] int tournamentID, [FromBody] TeamInsert insert)
+    public void Post([FromRoute] int tournamentID, [FromBody] TeamInsert insert, [FromServices] IValidator<TeamMiddleModelInsert>? insertValidator = null)
     {
         TeamMiddleModelInsert teamInsert = insert.Adapt<TeamMiddleModelInsert>();
 
         teamInsert.TournamentID = tournamentID;
 
-        _teamService.Insert(teamInsert);
+        _teamService.Insert(teamInsert, insertValidator);
     }
 
     // PUT api/<TeamController>
     [HttpPut]
-    public void Put([FromBody] TeamUpdate update)
+    public void Put([FromBody] TeamUpdate update, [FromServices] IValidator<TeamUpdate>? updateValidator = null)
     {
-        _teamService.Update(update);
+        _teamService.Update(update, updateValidator);
     }
 
     // DELETE api/<TeamController>/5

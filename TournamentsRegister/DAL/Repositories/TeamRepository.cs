@@ -1,8 +1,7 @@
 ﻿using EFCoreRepositoriesLib;
-using FluentQuery;
+using EFCoreRepositoriesLib.FluentValidation;
 using FluentQuery.Core;
-using FluentQuery.SQLSupport;
-using Mapster;
+using FluentValidation;
 using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
 using TournamentsRegister.DAL.DAOs;
@@ -12,12 +11,12 @@ using TournamentsRegister.Models.Requests;
 
 namespace TournamentsRegister.DAL.Repositories;
 
-public interface ITeamRepository : ICrudRepositoryWithPKAndMapperBase<Team, TeamDAO, TeamMiddleModelInsert, TeamUpdate>
+public interface ITeamRepository : ICrudRepositoryWithPKAndMapperAndValidationBase<Team, TeamDAO, TeamMiddleModelInsert, TeamUpdate>
 {
     public List<Team> GetAllFromTournament(int TournamentID);
 }
 
-public class TeamRepository : CrudRepositoryWithPKAndMapperBase<Team, TeamDAO, TeamMiddleModelInsert, TeamUpdate>, ITeamRepository
+public class TeamRepository : CrudRepositoryWithPKAndMapperAndValidationBase<Team, TeamDAO, TeamMiddleModelInsert, TeamUpdate>, ITeamRepository
 {
     public TeamRepository(TournamentContext dbContext, IMapper mapper) : base(dbContext, mapper)
     {
@@ -32,13 +31,21 @@ public class TeamRepository : CrudRepositoryWithPKAndMapperBase<Team, TeamDAO, T
         return GetAll(query);
     }
 
-    public override Team Insert(TeamMiddleModelInsert model)
+    protected override Team? InsertInternal(TeamMiddleModelInsert insert, IValidator<Team>? modelValidator = null, IValidator<TeamDAO>? daoValidator = null)
     {
-        Team team = _mapper.Map<Team>(model);
+        Team team = _mapper.Map<Team>(insert);
+
+        bool isModelValid = ValidateModel(team, modelValidator);
+
+        if (!isModelValid) return null;
 
         TeamDAO teamDao = _mapper.Map<TeamDAO>(team);
 
-        teamDao.TournamentDAOID = model.TournamentID;
+        bool isDaoValid = ValidateDAO(teamDao, daoValidator);
+
+        if (!isDaoValid) return null;
+
+        teamDao.TournamentDAOID = insert.TournamentID;
 
         _table.Add(teamDao);
 
@@ -47,30 +54,45 @@ public class TeamRepository : CrudRepositoryWithPKAndMapperBase<Team, TeamDAO, T
         return team;
     }
 
-    public override void Update(TeamUpdate model)
+    protected override void UpdateInternal(TeamUpdate update, IValidator<Team>? modelValidator = null, IValidator<TeamDAO>? daoValidator = null)
     {
-        TeamDAO? teamDao = _table.Where(x => x.ID == model.ID).Include(teamDao => teamDao.get_players).First();
+        TeamDAO? teamDao = _table.Where(x => x.ID == update.ID).Include(teamDao => teamDao.get_players).First();
 
         if (teamDao is null)
         {
-            throw new ArgumentException("the model must have a valid TournamentDAOID", nameof(model));
+            throw new ArgumentException("the update must have a valid TournamentDAOID", nameof(update));
         }
 
-        teamDao.Name = model.Name;
+        UpdateFromRequest(update, teamDao);
 
-        foreach (string removedPlayerName in model.RemovedPlayersNames)
-        {
-            teamDao.get_players.RemoveAll(player => player.Name == removedPlayerName);
-        }
+        bool isDaoValid = ValidateDAO(teamDao, daoValidator);
 
-        foreach (string newPlayerName in model.NewPlayersNames)
-        {
-            teamDao.get_players.Add(new PlayerDAO() { Name = newPlayerName });
-        }
+        if (!isDaoValid) return;
 
         _table.Update(teamDao);
 
         _dbContext.SaveChanges();
+
+        static void UpdateFromRequest(TeamUpdate update, TeamDAO teamDao)
+        {
+            teamDao.Name = update.Name;
+
+            foreach (string removedPlayerName in update.RemovedPlayersNames)
+            {
+                foreach (PlayerDAO playerDAO in teamDao.get_players)
+                {
+                    if (playerDAO.Name == removedPlayerName)
+                    {
+                        teamDao.get_players.Remove(playerDAO);
+                    }
+                }
+            }
+
+            foreach (string newPlayerName in update.NewPlayersNames)
+            {
+                teamDao.get_players.Add(new PlayerDAO() { Name = newPlayerName });
+            }
+        }
     }
 
     public override IQueryable<TeamDAO> ApplyTransformations(IQueryable<TeamDAO> entities)

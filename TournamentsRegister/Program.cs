@@ -3,6 +3,7 @@ using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
 using TournamentsRegister.DAL;
 using TournamentsRegister.DAL.Repositories;
+using TournamentsRegister.Models.MiddleModelsForDAL;
 using TournamentsRegister.Models.Requests;
 using TournamentsRegister.Services;
 using TournamentsRegister.Validators.ForRequests;
@@ -31,7 +32,7 @@ builder.Services.AddScoped<TeamService>();
 builder.Services.AddScoped<IValidator<TournamentInsert>, TournamentInsertValidator>();
 builder.Services.AddScoped<IValidator<TournamentUpdate>, TournamentUpdateValidator>();
 
-builder.Services.AddScoped<IValidator<TeamInsert>, TeamInsertValidator>();
+builder.Services.AddScoped<IValidator<TeamMiddleModelInsert>, TeamInsertValidator>();
 builder.Services.AddScoped<IValidator<TeamUpdate>, TeamUpdateValidator>();
 
 var app = builder.Build();

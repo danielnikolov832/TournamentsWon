@@ -1,12 +1,10 @@
 ﻿using FluentValidation;
-using Mapster;
-using System.ComponentModel.DataAnnotations;
-using TournamentsRegister.Models;
+using TournamentsRegister.Models.MiddleModelsForDAL;
 using TournamentsRegister.Models.Requests;
 
 namespace TournamentsRegister.Validators.ForRequests;
 
-public class TeamInsertValidator : AbstractValidator<TeamInsert>
+public class TeamInsertValidator : AbstractValidator<TeamMiddleModelInsert>
 {
     public TeamInsertValidator()
     {
