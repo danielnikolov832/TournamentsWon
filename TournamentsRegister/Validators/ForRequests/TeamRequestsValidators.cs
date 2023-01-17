@@ -1,4 +1,6 @@
 ﻿using FluentValidation;
+using TournamentsRegister.Constants;
+using TournamentsRegister.Models;
 using TournamentsRegister.Models.MiddleModelsForDAL;
 using TournamentsRegister.Models.Requests;
 
@@ -8,9 +10,32 @@ public class TeamInsertValidator : AbstractValidator<TeamMiddleModelInsert>
 {
     public TeamInsertValidator()
     {
-        RuleFor(insert => insert.Name).NotNull().NotEmpty().MaximumLength(300);
+        RuleFor(insert => insert.TournamentID).NotEqual(0);
 
-        RuleForEach(insert => insert.PlayerNames).NotEmpty().MaximumLength(300);
+        RuleFor(insert => insert.Name).NotNull().NotEmpty().MaximumLength(ModelAttributesConstants.TeamNameMaxLength);
+    }
+}
+
+public class TeamInsertValidatorForParentTournament : AbstractValidator<TeamMiddleModelInsert>
+{
+    public TeamInsertValidatorForParentTournament(Tournament parentTournament)
+    {
+        RuleFor(insert => insert.Name)
+            .Must(name =>
+            {
+                IEnumerable<string> teamNamesInParent =
+                    from Team childTeam in parentTournament.Teams
+                    select childTeam.Name;
+
+                foreach (string childName in teamNamesInParent)
+                {
+                    if (childName == name) return false;
+                }
+
+                return true;
+            }).WithMessage("Item must not contain a team with the same name");
+
+        RuleForEach(insert => insert.PlayerNames).NotEmpty().MaximumLength(ModelAttributesConstants.PlayerNameMaxLength);
     }
 }
 
@@ -18,9 +43,11 @@ public class TeamUpdateValidator : AbstractValidator<TeamUpdate>
 {
     public TeamUpdateValidator()
     {
-        RuleFor(update => update.Name).NotNull().NotEmpty().MaximumLength(300);
+        RuleFor(insert => insert.ID).NotEqual(0);
 
-        RuleForEach(update => update.NewPlayersNames).NotEmpty().MaximumLength(300);
-        RuleForEach(update => update.RemovedPlayersNames).NotEmpty().MaximumLength(300);
+        RuleFor(update => update.Name).NotNull().NotEmpty().MaximumLength(ModelAttributesConstants.TeamNameMaxLength);
+
+        RuleForEach(update => update.NewPlayersNames).MaximumLength(ModelAttributesConstants.PlayerNameMaxLength);
+        RuleForEach(update => update.RemovedPlayersNames).MaximumLength(ModelAttributesConstants.PlayerNameMaxLength);
     }
 }
