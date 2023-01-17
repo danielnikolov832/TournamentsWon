@@ -1,5 +1,6 @@
 ﻿using EFCoreRepositoriesLib;
 using System.ComponentModel.DataAnnotations;
+using TournamentsRegister.Constants;
 
 namespace TournamentsRegister.DAL.DAOs;
 
@@ -8,10 +9,10 @@ namespace TournamentsRegister.DAL.DAOs;
 public class TournamentDAO : PublicPrimaryKeyUser
 #pragma warning restore S101 // Types should be named in PascalCase
 {
-    [MaxLength(300)]
+    [MaxLength(ModelAttributesConstants.TournamentNameMaxLength)]
     public string? Name { get; set; }
 
-    [MaxLength(1000)]
+    [MaxLength(ModelAttributesConstants.TournamentDescriptionMaxLength)]
     public string? Description { get; set; }
     public List<TeamDAO> Teams { get; set; }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.

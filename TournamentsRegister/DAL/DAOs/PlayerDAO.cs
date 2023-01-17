@@ -1,6 +1,7 @@
 ﻿using EFCoreRepositoriesLib;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using TournamentsRegister.Constants;
 
 namespace TournamentsRegister.DAL.DAOs;
 
@@ -8,7 +9,7 @@ namespace TournamentsRegister.DAL.DAOs;
 public class PlayerDAO : PublicPrimaryKeyUser
 #pragma warning restore S101 // Types should be named in PascalCase
 {
-    [MaxLength(300)]
+    [MaxLength(ModelAttributesConstants.PlayerNameMaxLength)]
     public string? Name { get; set; }
     public int TeamDAOID { get; set; }
 }
