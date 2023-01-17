@@ -51,20 +51,20 @@ public class TeamController : ControllerBase
 
     // POST api/<TeamController>/5
     [HttpPost("{tournamentID}")]
-    public void Post([FromRoute] int tournamentID, [FromBody] TeamInsert insert, [FromServices] IValidator<TeamMiddleModelInsert>? insertValidator = null)
+    public void Post([FromRoute] int tournamentID, [FromBody] TeamInsert insert, [FromServices] IValidator<TeamMiddleModelInsert>? insertValidator = null, [FromServices] IValidator<Team>? modelValidator = null)
     {
         TeamMiddleModelInsert teamInsert = insert.Adapt<TeamMiddleModelInsert>();
 
         teamInsert.TournamentID = tournamentID;
 
-        _teamService.Insert(teamInsert, insertValidator);
+        _teamService.Insert(teamInsert, insertValidator, modelValidator);
     }
 
     // PUT api/<TeamController>
     [HttpPut]
-    public void Put([FromBody] TeamUpdate update, [FromServices] IValidator<TeamUpdate>? updateValidator = null)
+    public void Put([FromBody] TeamUpdate update, [FromServices] IValidator<TeamUpdate>? updateValidator = null, [FromServices] IValidator<Team>? modelValidator = null)
     {
-        _teamService.Update(update, updateValidator);
+        _teamService.Update(update, updateValidator, modelValidator);
     }
 
     // DELETE api/<TeamController>/5

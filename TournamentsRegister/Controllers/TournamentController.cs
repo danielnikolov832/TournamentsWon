@@ -42,16 +42,16 @@ public class TournamentController : ControllerBase
 
     // POST api/<TournamentController>
     [HttpPost]
-    public void Post([FromBody] TournamentInsert insert, [FromServices] IValidator<TournamentInsert>? validator = null)
+    public void Post([FromBody] TournamentInsert insert, [FromServices] IValidator<TournamentInsert>? insertValidator = null, [FromServices] IValidator<Tournament>? tournamentValidator = null)
     {
-        _tournamentService.Insert(insert, validator);
+        _tournamentService.Insert(insert, insertValidator, tournamentValidator);
     }
 
     // PUT api/<TournamentController>
     [HttpPut]
-    public void Put([FromBody] TournamentUpdate update, [FromServices] IValidator<TournamentUpdate>? validator = null)
+    public void Put([FromBody] TournamentUpdate update, [FromServices] IValidator<TournamentUpdate>? insertValidator = null, [FromServices] IValidator<Tournament>? tournamentValidator = null)
     {
-        _tournamentService.Update(update, validator);
+        _tournamentService.Update(update, insertValidator, tournamentValidator);
     }
 
     // DELETE api/<TournamentController>/5
