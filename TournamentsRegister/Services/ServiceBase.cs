@@ -72,10 +72,17 @@ public class ServiceBase<TPrimaryKeyUserModel, TPrimaryKeyUserDAO, TInsert, TUpd
     {
     }
 
-    public virtual TPrimaryKeyUserModel? Insert(TInsert insert, IValidator<TInsert>? currentInsertValidator = null,
+    public virtual TPrimaryKeyUserModel Insert(TInsert insert, IValidator<TInsert>? currentInsertValidator = null,
         IValidator<TPrimaryKeyUserModel>? currentModelValidator = null, IValidator<TPrimaryKeyUserDAO>? currentDaoValidator = null)
     {
         return _repository.Insert(insert, ServiceHelper.GetValidator(currentInsertValidator, _defaultInsertValidator),
+            ServiceHelper.GetValidator(currentModelValidator, _defaultModelValidator), ServiceHelper.GetValidator(currentDaoValidator, _defaultDaoValidator));
+    }
+
+    public virtual TPrimaryKeyUserModel? TryInsert(TInsert insert, IValidator<TInsert>? currentInsertValidator = null,
+        IValidator<TPrimaryKeyUserModel>? currentModelValidator = null, IValidator<TPrimaryKeyUserDAO>? currentDaoValidator = null)
+    {
+        return _repository.TryInsert(insert, ServiceHelper.GetValidator(currentInsertValidator, _defaultInsertValidator),
             ServiceHelper.GetValidator(currentModelValidator, _defaultModelValidator), ServiceHelper.GetValidator(currentDaoValidator, _defaultDaoValidator));
     }
 
@@ -145,6 +152,11 @@ public class ServiceBase<TPrimaryKeyUserModel, TInsert, TUpdate, TRepository>
     public virtual TPrimaryKeyUserModel Insert(TInsert insert, IValidator<TInsert>? currentInsertValidator = null, IValidator<TPrimaryKeyUserModel>? currentModelValidator = null)
     {
         return _repository.Insert(insert, ServiceHelper.GetValidator(currentInsertValidator, _defaultInsertValidator), ServiceHelper.GetValidator(currentModelValidator, _defaultModelValidator));
+    }
+
+    public virtual TPrimaryKeyUserModel? TryInsert(TInsert insert, IValidator<TInsert>? currentInsertValidator = null, IValidator<TPrimaryKeyUserModel>? currentModelValidator = null)
+    {
+        return _repository.TryInsert(insert, ServiceHelper.GetValidator(currentInsertValidator, _defaultInsertValidator), ServiceHelper.GetValidator(currentModelValidator, _defaultModelValidator));
     }
 
     public virtual void Update(TUpdate update, IValidator<TUpdate>? currentUpdateValidator = null, IValidator<TPrimaryKeyUserModel>? currentModelValidator = null)
