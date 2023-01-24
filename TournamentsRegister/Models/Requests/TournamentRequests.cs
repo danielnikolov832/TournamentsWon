@@ -5,6 +5,7 @@ namespace TournamentsRegister.Models.Requests;
 
 public class TournamentInsert
 {
+    [Required(AllowEmptyStrings = false)]
     [AdaptMember(nameof(Tournament.Name))]
     public string? Name { get; set; }
     [AdaptMember(nameof(Tournament.Description))]
