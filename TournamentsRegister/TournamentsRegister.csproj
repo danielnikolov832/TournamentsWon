@@ -17,7 +17,6 @@
 
   <ItemGroup>
     <Folder Include="DAL\Migrations\" />
-    <Folder Include="Models\BaseClasses\" />
     <Folder Include="Models\Responses\" />
   </ItemGroup>
 

@@ -27,9 +27,11 @@ builder.Services.AddScoped<IMapper, TournamentMapper>();
 
 builder.Services.AddScoped<ITournamentRepository, TournamentRepository>();
 builder.Services.AddScoped<ITeamRepository, TeamRepository>();
+builder.Services.AddScoped<IPlayerRepository, PlayerRepository>();
 
 builder.Services.AddScoped<TournamentService>();
 builder.Services.AddScoped<TeamService>();
+builder.Services.AddScoped<PlayerService>();
 
 builder.Services.AddScoped<IValidator<TournamentInsert>, TournamentInsertValidator>();
 builder.Services.AddScoped<IValidator<TournamentUpdate>, TournamentUpdateValidator>();
