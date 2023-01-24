@@ -25,14 +25,18 @@ public class TeamController : ControllerBase
     [HttpGet]
     public IEnumerable<Team> Get()
     {
-        return _teamService.GetAll();
+        List<Team> teams = _teamService.GetAll();
+
+        return teams;
     }
 
     // GET: api/<TeamController>/tournament/5
     [HttpGet("tournament/{tournamentID}")]
     public IEnumerable<Team> Get([FromRoute] int tournamentID)
     {
-        return _teamService.GetAllFromTournament(tournamentID);
+        List<Team> teamsInTournament = _teamService.GetAllFromTournament(tournamentID);
+
+        return teamsInTournament;
     }
 
     // GET api/<TeamController>/5
@@ -49,9 +53,10 @@ public class TeamController : ControllerBase
         return Ok(output);
     }
 
-    // POST api/<TeamController>/5
-    [HttpPost("{tournamentID}")]
-    public void Post([FromRoute] int tournamentID, [FromBody] TeamInsert insert, [FromServices] IValidator<TeamMiddleModelInsert>? insertValidator = null, [FromServices] IValidator<Team>? modelValidator = null)
+    // POST api/<TeamController>/tournament/5
+    [HttpPost("tournament/{tournamentID}")]
+    public void Post([FromRoute] int tournamentID, [FromBody] TeamInsert insert,
+        [FromServices] IValidator<TeamMiddleModelInsert>? insertValidator = null, [FromServices] IValidator<Team>? modelValidator = null)
     {
         TeamMiddleModelInsert teamInsert = insert.Adapt<TeamMiddleModelInsert>();
 

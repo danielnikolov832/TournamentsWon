@@ -18,7 +18,10 @@ public interface ITeamRepository : ICrudRepositoryWithPKAndMapperAndValidationBa
 
 public class TeamRepository : CrudRepositoryWithPKAndMapperAndValidationBase<Team, TeamDAO, TeamMiddleModelInsert, TeamUpdate>, ITeamRepository
 {
-    public TeamRepository(TournamentContext dbContext, IMapper mapper) : base(dbContext, mapper)
+    public TeamRepository(TournamentContext dbContext, IMapper mapper,
+        IValidator<Team>? defaultIModelValidator = null, IValidator<TeamDAO>? defaultDaoValidator = null,
+        IValidator<TeamMiddleModelInsert>? defaultInsertValidator = null, IValidator<TeamUpdate>? defaultUpdateValidator = null)
+        : base(dbContext, mapper, defaultIModelValidator, defaultDaoValidator, defaultInsertValidator, defaultUpdateValidator)
     {
     }
 
@@ -60,7 +63,7 @@ public class TeamRepository : CrudRepositoryWithPKAndMapperAndValidationBase<Tea
 
         if (teamDao is null)
         {
-            throw new ArgumentException("the update must have a valid TournamentDAOID", nameof(update));
+            throw new ArgumentException($"The update must have a valid {nameof(TeamUpdate.ID)}", nameof(update));
         }
 
         UpdateFromRequest(update, teamDao);

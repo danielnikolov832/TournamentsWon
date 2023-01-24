@@ -14,7 +14,10 @@ public interface ITournamentRepository : ICrudRepositoryWithPKAndMapperAndValida
 
 public class TournamentRepository : CrudRepositoryWithPKAndMapperAndValidationBase<Tournament, TournamentDAO, TournamentInsert, TournamentUpdate>, ITournamentRepository
 {
-    public TournamentRepository(TournamentContext dbContext, IMapper mapper) : base(dbContext, mapper)
+    public TournamentRepository(TournamentContext dbContext, IMapper mapper,
+        IValidator<Tournament>? defaultIModelValidator = null, IValidator<TournamentDAO>? defaultDaoValidator = null,
+        IValidator<TournamentInsert>? defaultInsertValidator = null, IValidator<TournamentUpdate>? defaultUpdateValidator = null)
+        : base(dbContext, mapper, defaultIModelValidator, defaultDaoValidator, defaultInsertValidator, defaultUpdateValidator)
     {
     }
 
