@@ -32,7 +32,7 @@ namespace TournamentsRegister.DAL.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
 
-                    b.Property<string>("Name")
+                    b.Property<string>("TeamName")
                         .HasMaxLength(300)
                         .HasColumnType("nvarchar(300)");
 
@@ -54,7 +54,7 @@ namespace TournamentsRegister.DAL.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
 
-                    b.Property<string>("Name")
+                    b.Property<string>("TeamName")
                         .HasMaxLength(300)
                         .HasColumnType("nvarchar(300)");
 
@@ -80,7 +80,7 @@ namespace TournamentsRegister.DAL.Migrations
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("TeamName")
                         .HasMaxLength(300)
                         .HasColumnType("nvarchar(300)");
 
