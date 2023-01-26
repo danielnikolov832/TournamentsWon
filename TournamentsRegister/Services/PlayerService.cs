@@ -31,6 +31,6 @@ public class PlayerService : ServiceBase<Player, PlayerDAO, PlayerInsert, Player
 
         Player player = playersFromTeam.Single(childPlayer => childPlayer.Name == delete.PlayerName);
 
-        Remove(player);
+        Remove(player.ID);
     }
 }

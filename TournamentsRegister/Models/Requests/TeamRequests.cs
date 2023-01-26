@@ -27,4 +27,14 @@ public class TeamUpdate
     [AdaptIgnore]
     public List<string> RemovedPlayersNames { get; set; }
 }
+public class TeamDelete
+{
+    [Required(AllowEmptyStrings = false)]
+    [AdaptMember("ID")]
+    public int TournamentID { get; set; }
+
+    [Required(AllowEmptyStrings = false)]
+    [AdaptMember(nameof(Team.Name))]
+    public string TeamName { get; set; }
+}
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.

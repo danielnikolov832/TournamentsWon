@@ -48,4 +48,13 @@ public class TeamService : ServiceBase<Team, TeamDAO, TeamMiddleModelInsert, Tea
 
         return null;
     }
+
+    public void RemoveFromRequest(TeamDelete delete)
+    {
+        List<Team> teamsInTournament = GetAllFromTournament(delete.TournamentID);
+
+        Team team = teamsInTournament.Single(childPlayer => childPlayer.Name == delete.TeamName);
+
+        Remove(team.ID);
+    }
 }
