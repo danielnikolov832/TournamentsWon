@@ -59,7 +59,7 @@ public class TeamRepository : CrudRepositoryWithPKAndMapperAndValidationBase<Tea
 
     protected override void UpdateInternal(TeamUpdate update, IValidator<Team>? modelValidator = null, IValidator<TeamDAO>? daoValidator = null)
     {
-        TeamDAO? teamDao = _table.Where(x => x.ID == update.ID).Include(teamDao => teamDao.get_players).First();
+        TeamDAO? teamDao = _table.Where(x => x.ID == update.ID).Include(teamDao => teamDao.get_players).Single();
 
         if (teamDao is null)
         {
