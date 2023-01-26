@@ -9,5 +9,7 @@ public class TeamModelValidator : AbstractValidator<Team>
 	public TeamModelValidator()
 	{
         RuleFor(team => team.Name).NotNull().NotEmpty().MaximumLength(ModelAttributesConstants.TeamNameMaxLength);
+
+        RuleForEach(team => team.get_players).SetValidator(new PlayerValidator());
     }
 }
