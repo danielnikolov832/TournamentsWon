@@ -1,7 +1,9 @@
 ﻿using FluentValidation;
+using Mapster;
 using Microsoft.AspNetCore.Mvc;
 using TournamentsRegister.Models;
 using TournamentsRegister.Models.Requests;
+using TournamentsRegister.Models.Responses;
 using TournamentsRegister.Services;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -21,9 +23,9 @@ public class TournamentController : ControllerBase
 
     // GET: api/<TournamentController>
     [HttpGet]
-    public IEnumerable<Tournament> Get()
+    public IEnumerable<TournamentResponse> Get()
     {
-        return _tournamentService.GetAll();
+        return _tournamentService.GetAll().Adapt<List<TournamentResponse>>();
     }
 
     // GET api/<TournamentController>/5
@@ -37,7 +39,7 @@ public class TournamentController : ControllerBase
             return NotFound();
         }
 
-        return Ok(output);
+        return Ok(output.Adapt<TournamentResponse>());
     }
 
     // POST api/<TournamentController>

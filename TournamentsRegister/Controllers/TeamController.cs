@@ -5,6 +5,7 @@ using TournamentsRegister.Models;
 using TournamentsRegister.Services;
 using Mapster;
 using FluentValidation;
+using TournamentsRegister.Models.Responses;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -21,27 +22,16 @@ public class TeamController : ControllerBase
 
     private readonly TeamService _teamService;
 
-    // GET: api/<TeamController>
-    [HttpGet]
-    public IEnumerable<Team> Get()
-    {
-        List<Team> teams = _teamService.GetAll();
-
-        return teams;
-    }
-
     // GET: api/<TeamController>/tournament/5
     [HttpGet("tournament/{tournamentID}")]
-    public IEnumerable<Team> Get([FromRoute] int tournamentID)
+    public IEnumerable<TeamResponse> Get([FromRoute] int tournamentID)
     {
-        List<Team> teamsInTournament = _teamService.GetAllFromTournament(tournamentID);
-
-        return teamsInTournament;
+        return _teamService.GetAllFromTournament(tournamentID).Adapt<List<TeamResponse>>();
     }
 
     // GET api/<TeamController>/5
     [HttpGet("{id}")]
-    public ActionResult<Team> GetById(int id)
+    public ActionResult<TeamResponse> GetById(int id)
     {
         Team? output = _teamService.GetById(id);
 
@@ -50,7 +40,7 @@ public class TeamController : ControllerBase
             return NotFound();
         }
 
-        return Ok(output);
+        return Ok(output.Adapt<TeamResponse>());
     }
 
     // POST api/<TeamController>/tournament/5
@@ -72,10 +62,10 @@ public class TeamController : ControllerBase
         _teamService.Update(update, updateValidator, modelValidator);
     }
 
-    // DELETE api/<TeamController>/5
-    [HttpDelete("{id}")]
-    public void Delete(int id)
+    // DELETE api/<TeamController>
+    [HttpDelete]
+    public void Delete([FromBody] TeamDelete delete)
     {
-        _teamService.Remove(id);
+        _teamService.RemoveFromRequest(delete);
     }
 }

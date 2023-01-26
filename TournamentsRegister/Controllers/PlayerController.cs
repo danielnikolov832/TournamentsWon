@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Mapster;
+using Microsoft.AspNetCore.Mvc;
 using TournamentsRegister.Models;
 using TournamentsRegister.Models.Requests;
+using TournamentsRegister.Models.Responses;
 using TournamentsRegister.Services;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -18,18 +20,11 @@ namespace TournamentsRegister.Controllers
 
         private readonly PlayerService _playerService;
 
-        // GET: api/<PlayerController>
-        [HttpGet]
-        public IEnumerable<Player> Get()
-        {
-            return _playerService.GetAll();
-        }
-
         // GET api/<PlayerController>/team/5
         [HttpGet("team/{teamID}")]
-        public IEnumerable<Player> Get(int teamID)
+        public IEnumerable<PlayerResponse> Get(int teamID)
         {
-            return _playerService.GetAllFromTeam(teamID);
+            return _playerService.GetAllFromTeam(teamID).Adapt<List<PlayerResponse>>();
         }
 
         // POST api/<PlayerController>
@@ -39,14 +34,14 @@ namespace TournamentsRegister.Controllers
             _playerService.Insert(insert);
         }
 
-        // PUT api/<PlayerController>/5
+        // PUT api/<PlayerController>
         [HttpPut]
         public void Put([FromBody] PlayerUpdate update)
         {
             _playerService.Update(update);
         }
 
-        // DELETE api/<PlayerController>/5
+        // DELETE api/<PlayerController>
         [HttpDelete]
         public void Delete([FromBody] PlayerDelete delete)
         {
