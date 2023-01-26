@@ -2,7 +2,7 @@
 
 namespace TournamentsRegister.Models;
 
-public class Player : PrivatePrimaryKeyUser
+public class Player : ReadOnlyPrimaryKeyUser
 {
     public string? Name { get; set; }
 }
