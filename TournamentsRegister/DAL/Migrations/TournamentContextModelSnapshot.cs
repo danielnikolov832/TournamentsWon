@@ -98,7 +98,7 @@ namespace TournamentsRegister.DAL.Migrations
             modelBuilder.Entity("TournamentsRegister.DAL.DAOs.TeamDAO", b =>
                 {
                     b.HasOne("TournamentsRegister.DAL.DAOs.TournamentDAO", null)
-                        .WithMany("Teams")
+                        .WithMany("get_teams")
                         .HasForeignKey("TournamentDAOID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -111,7 +111,7 @@ namespace TournamentsRegister.DAL.Migrations
 
             modelBuilder.Entity("TournamentsRegister.DAL.DAOs.TournamentDAO", b =>
                 {
-                    b.Navigation("Teams");
+                    b.Navigation("get_teams");
                 });
 #pragma warning restore 612, 618
         }
