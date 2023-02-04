@@ -24,7 +24,7 @@ public class TeamInsertValidatorForParentTournament : AbstractValidator<TeamMidd
             .Must(name =>
             {
                 IEnumerable<string> teamNamesInParent =
-                    from Team childTeam in parentTournament.Teams
+                    from Team childTeam in parentTournament.get_teams
                     select childTeam.Name;
 
                 foreach (string childName in teamNamesInParent)

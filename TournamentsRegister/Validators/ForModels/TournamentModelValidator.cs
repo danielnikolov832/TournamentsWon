@@ -11,9 +11,9 @@ public class TournamentModelValidator : AbstractValidator<Tournament>
 		RuleFor(tournament => tournament.Name).NotNull().NotEmpty().MaximumLength(ModelAttributesConstants.TournamentNameMaxLength);
 		RuleFor(tournament => tournament.Description).NotNull().NotEmpty().MaximumLength(ModelAttributesConstants.TournamentDescriptionMaxLength);
 
-        RuleFor(tournament => tournament.Teams).Must(teams => TeamsDoNotHaveDuplicateNames(teams));
+        RuleFor(tournament => tournament.get_teams).Must(teams => TeamsDoNotHaveDuplicateNames(teams));
 
-        RuleForEach(tournament => tournament.Teams).SetValidator(new TeamModelValidator());
+        RuleForEach(tournament => tournament.get_teams).SetValidator(new TeamModelValidator());
     }
 
     private static bool TeamsDoNotHaveDuplicateNames(List<Team> teams)

@@ -14,7 +14,7 @@ public class TournamentResponse
     [AdaptMember(nameof(Tournament.Description))]
     public string Description { get; set; }
 
-    [AdaptMember(nameof(Tournament.Teams))]
+    [AdaptMember(nameof(Tournament.get_teams))]
     public List<TeamResponse> Teams { get; set; } = new();
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 }
